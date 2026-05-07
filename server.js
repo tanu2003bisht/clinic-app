@@ -11,6 +11,8 @@ app.get('/',async(req,res) =>{
     res.send('welcome to our clinic how can i help you!');
 })
 
+const doctorRoutes = require('./routes/doctorRoutes');
+app.use('/doctor', doctorRoutes);
 
 app.listen(PORT,()=>{
     console.log('the localhost is running');
