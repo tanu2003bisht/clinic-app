@@ -29,7 +29,7 @@ router.get('/', async(req,res) =>{
 
 router.get('/:department',async(req,res) =>{
     try{
-    const department = req.params.department;
+    const department = req.params.department; 
     if(department === 'cardio' || department === 'surgeon' || department === 'gyne'){
         const response = await Doctor.find({department:department});
         console.log('response fetched');
