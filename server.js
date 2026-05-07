@@ -12,7 +12,10 @@ app.get('/',async(req,res) =>{
 })
 
 const doctorRoutes = require('./routes/doctorRoutes');
+const medicineRoutes = require('./routes/medicineRoutes');
+
 app.use('/doctor', doctorRoutes);
+app.use('/medicine',medicineRoutes);
 
 app.listen(PORT,()=>{
     console.log('the localhost is running');

@@ -45,7 +45,7 @@ router.get('/:department',async(req,res) =>{
 
 router.put('/:id',async(req,res) =>{
     try{
-    const doctorId = req.params.id;
+    const doctorID = req.params.id;
     const updateID = req.body;
     const response = await Doctor.findByIdAndUpdate
     (doctorId,updateID,{
