@@ -7,6 +7,13 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
+const logoRequest = (req,res,next) =>{
+    console.log(`[${new Date().toLocaleString()}], request made to: ${req.originalUrl}`);
+    next();
+}
+
+app.use(logoRequest);
+
 app.get('/',async(req,res) =>{
     res.send('welcome to our clinic how can i help you!');
 })
