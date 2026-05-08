@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const doctorSchema = new mongoose.Schema({
-    name:{
+    username:{
         type: String,
         required: true
     },
