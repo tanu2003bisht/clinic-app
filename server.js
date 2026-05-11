@@ -26,7 +26,7 @@ const doctorRoutes = require('./routes/doctorRoutes');
 const medicineRoutes = require('./routes/medicineRoutes');
 
 
-app.use('/doctor', localAuthMiddleware, doctorRoutes);
+app.use('/doctor', doctorRoutes);
 app.use('/medicine',medicineRoutes);
 
 app.listen(PORT,()=>{

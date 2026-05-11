@@ -4,11 +4,11 @@ const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy(async(username,password,done) =>{
     try{
-        console.log('received credentials',username,password );
+        //console.log('received credentials',username,password );
         const user = await Doctor.findOne({username:username});
         if(!user)
             return done(null,false,{message:'incorrect username'})
-        const isPasswordMatch = user.password === password? true:false;
+        const isPasswordMatch = await user.comparePassword(password);
         if(isPasswordMatch)
             return done(null,user)
         else

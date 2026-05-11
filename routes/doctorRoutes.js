@@ -1,21 +1,72 @@
 const express = require('express');
 const router = express.Router();
 const Doctor = require('./../models/doctor');
+const {jwtAuthMiddleware,generateToken} = require('./../jwt');
 
-router.post('/', async(req,res) =>{
+router.post('/signup', async(req,res) =>{
     try{
     const data = req.body;
     const newDoctor = new Doctor(data);
     const response = await newDoctor.save();
     console.log('data saved');
-    res.status(201).json(response);
+
+    const payload = {
+        id: response.id,
+        username: response.username
+    }
+    console.log(JSON.stringify(payload));
+
+    const token = generateToken(response.username);
+    console.log('token is:' , token);
+
+    res.status(201).json({response:response,token:token});
     }catch(err){
         console.log(err);
         res.status(500).json({message:'internal server error'});
     }
 })
 
-router.get('/', async(req,res) =>{
+//login route
+router.post('/login',async(req,res) =>{
+    try{
+        //extract username and password
+        const {username,password} = req.body;
+        //find the user by username
+        const user = await Doctor.findOne({username:username})
+        //if user or password does  not exit return error
+        if(!user || !(await user.comparePassword(password))){
+            return res.status(401).json({error:'invalid username or password'})
+        }
+
+        //generate token
+        const payload = {
+            id: user.id,
+            username: user.username
+        }
+        const token = generateToken(payload);
+        //return token as response
+        res.json({token});
+    }catch(err){
+        console.log(err);
+        res.status(500).json({message:'internal server error'});
+    }
+})
+
+//profile
+router.get('/profile',jwtAuthMiddleware,async(req,res) =>{
+    try{
+        const userData = req.user;
+        console.log('user data:',userData);
+
+        const userId = userData.id;
+        const user = await Doctor.findById(userId);
+        res.status(200).json({user});
+    }catch(err){
+        console.log(err);
+        res.status(500).json({message:'internal server error'});
+    }
+})
+router.get('/', jwtAuthMiddleware,async(req,res) =>{
     try{
     const data = await Doctor.find();
     console.log('data fetched');
@@ -45,7 +96,7 @@ router.get('/:department',async(req,res) =>{
 
 router.put('/:id',async(req,res) =>{
     try{
-    const doctorID = req.params.id;
+    const doctorId = req.params.id;
     const updateID = req.body;
     const response = await Doctor.findByIdAndUpdate
     (doctorId,updateID,{
